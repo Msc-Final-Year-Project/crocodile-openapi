@@ -8,6 +8,7 @@ info:
   contact:
     name: Crocodile API Support
     url: 'https://crocodile.store'
+    email: zhiwei.zhang24@imperial.ac.uk
 servers:
   - url: 'http://localhost:8080/api'
     description: Local development server
@@ -16,8 +17,8 @@ servers:
 security:
   - BearerAuth: []
 paths:
-  /:
-    $ref: paths.yaml
+  # /:
+  #   $ref: paths.yaml
   /user/register:
     $ref: paths/user@register.yaml
   /user/login:

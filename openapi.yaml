@@ -1,0 +1,1778 @@
+openapi: 3.0.3
+info:
+  title: Crocodile Backend API
+  description: A comprehensive API for managing AI models, applications, user authentication, detection records, and benchmarking
+  version: 1.0.0
+  contact:
+    name: Crocodile API Support
+    url: https://crocodile.store
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local development server
+  - url: https://api.crocodile.store/api
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+paths:
+  # Health check
+  /:
+    get:
+      tags:
+        - Health
+      summary: Health check and system information
+      description: Returns system health status, CPU, memory usage, and version
+      security: []
+      responses:
+        '200':
+          description: System health information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  message: "pong"
+                  cpu: 8
+                  memory:
+                    alloc: 1024000
+                    totalAlloc: 5120000
+                    sys: 10240000
+                    numGC: 15
+                  version: "1.0.0"
+
+  # User Authentication
+  /user/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  id: 1
+                  email: "user@example.com"
+                  isAdmin: false
+                  status: "active"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /user/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /user:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user information
+      description: Retrieve information about the authenticated user
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  id: 1
+                  email: "user@example.com"
+                  isAdmin: false
+                  status: "active"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Models
+  /model:
+    get:
+      tags:
+        - Models
+      summary: List user's models
+      description: Get all models created by the authenticated user
+      responses:
+        '200':
+          description: List of user's models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Models
+      summary: Create a new model
+      description: Create a new AI model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateModelRequest'
+      responses:
+        '200':
+          description: Model created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/public:
+    get:
+      tags:
+        - Models
+      summary: List public models
+      description: Get all publicly available models with quantizations and formats
+      security: []
+      responses:
+        '200':
+          description: List of public models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /model/all:
+    get:
+      tags:
+        - Models
+      summary: List all accessible models
+      description: Get all models accessible to the user (owned + public, or all if admin)
+      responses:
+        '200':
+          description: List of all accessible models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/final-benchmark:
+    get:
+      tags:
+        - Models
+      summary: List final benchmark models
+      description: Get models marked for final benchmarking
+      responses:
+        '200':
+          description: List of final benchmark models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}:
+    get:
+      tags:
+        - Models
+      summary: Get model details
+      description: Retrieve detailed information about a specific model
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: Model details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Models
+      summary: Update model
+      description: Update model information
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateModelRequest'
+      responses:
+        '200':
+          description: Model updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Models
+      summary: Delete model
+      description: Delete a model and all its associated data
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: Model deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /model/{id}/upload-url:
+    get:
+      tags:
+        - Models
+      summary: Get model upload URL
+      description: Get a pre-signed URL for uploading model file
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: Upload URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  url: "https://storage.example.com/upload-url"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/upload/complete:
+    post:
+      tags:
+        - Models
+      summary: Complete model upload
+      description: Mark model upload as complete and update metadata
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: Upload completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/download-url:
+    get:
+      tags:
+        - Models
+      summary: Get model download URL
+      description: Get a pre-signed URL for downloading the original model
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: Download URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  url: "https://storage.example.com/download-url"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # Model Quantizations
+  /model/{id}/quantization:
+    get:
+      tags:
+        - Quantization
+      summary: List model quantizations
+      description: Get all quantizations for a specific model
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      responses:
+        '200':
+          description: List of model quantizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - Quantization
+      summary: Create model quantization
+      description: Create a new quantization for a model
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateModelQuantizationRequest'
+      responses:
+        '200':
+          description: Quantization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/quantization/{quantizationId}:
+    put:
+      tags:
+        - Quantization
+      summary: Update model quantization
+      description: Update quantization accuracy
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelQuantizationUpdateRequest'
+      responses:
+        '200':
+          description: Quantization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - Quantization
+      summary: Delete model quantization
+      description: Delete a quantization and all its formats
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+      responses:
+        '200':
+          description: Quantization deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Model Quantization Formats
+  /model/{id}/quantization/{quantizationId}/format:
+    post:
+      tags:
+        - Formats
+      summary: Create quantization format
+      description: Create a new format for a model quantization
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelQuantizationFormatCreateRequest'
+      responses:
+        '200':
+          description: Format created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/quantization/{quantizationId}/format/{format}/upload-url:
+    get:
+      tags:
+        - Formats
+      summary: Get format upload URL
+      description: Get pre-signed URL for uploading quantization format file
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+        - $ref: '#/components/parameters/FormatId'
+      responses:
+        '200':
+          description: Upload URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/quantization/{quantizationId}/format/{format}/upload/complete:
+    post:
+      tags:
+        - Formats
+      summary: Complete format upload
+      description: Mark format upload as complete and update metadata
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+        - $ref: '#/components/parameters/FormatId'
+      responses:
+        '200':
+          description: Upload completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /model/{id}/quantization/{quantizationId}/format/{format}/download-url:
+    get:
+      tags:
+        - Formats
+      summary: Get format download URL
+      description: Get pre-signed URL for downloading quantization format file
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+        - $ref: '#/components/parameters/FormatId'
+      responses:
+        '200':
+          description: Download URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /model/{id}/quantization/{quantizationId}/format/{formatId}:
+    delete:
+      tags:
+        - Formats
+      summary: Delete quantization format
+      description: Delete a specific quantization format
+      parameters:
+        - $ref: '#/components/parameters/ModelId'
+        - $ref: '#/components/parameters/QuantizationId'
+        - name: formatId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Format ID
+      responses:
+        '200':
+          description: Format deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Detection Records
+  /detection:
+    get:
+      tags:
+        - Detection
+      summary: List detection records
+      description: Get all detection records for the authenticated user
+      responses:
+        '200':
+          description: List of detection records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Detection
+      summary: Create detection record
+      description: Create a new detection record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionRecordRequest'
+      responses:
+        '200':
+          description: Detection record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  id: 1
+                  uploadUrl: "https://storage.example.com/upload-url"
+                  thumbnailUploadUrl: "https://storage.example.com/thumbnail-upload-url"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /detection/{id}:
+    put:
+      tags:
+        - Detection
+      summary: Update detection record
+      description: Update detection record name
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Detection record ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionRecordUpdateRequest'
+      responses:
+        '200':
+          description: Detection record updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Detection
+      summary: Delete detection record
+      description: Delete a detection record and its associated files
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Detection record ID
+      responses:
+        '200':
+          description: Detection record deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /detection/{id}/complete:
+    post:
+      tags:
+        - Detection
+      summary: Complete detection record
+      description: Mark detection record as completed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Detection record ID
+      responses:
+        '200':
+          description: Detection record completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Benchmark Records
+  /benchmark:
+    get:
+      tags:
+        - Benchmark
+      summary: List benchmark records
+      description: Get all benchmark records for the authenticated user
+      responses:
+        '200':
+          description: List of benchmark records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Benchmark
+      summary: Create benchmark record
+      description: Create a new benchmark record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBenchmarkRecordRequest'
+      responses:
+        '200':
+          description: Benchmark record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /benchmark/deep-analysis:
+    get:
+      tags:
+        - Benchmark
+      summary: List analyzed models
+      description: Get all deep analysis records (public)
+      security: []
+      responses:
+        '200':
+          description: List of analyzed models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+    post:
+      tags:
+        - Benchmark
+      summary: Create deep analysis record
+      description: Create a new deep analysis record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeepAnalysisRecordRequest'
+      responses:
+        '200':
+          description: Deep analysis record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /benchmark/deep-analysis/already:
+    get:
+      tags:
+        - Benchmark
+      summary: List user's analyzed models
+      description: Get deep analysis records for the authenticated user
+      responses:
+        '200':
+          description: List of user's analyzed models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Applications
+  /application:
+    get:
+      tags:
+        - Applications
+      summary: List applications
+      description: Get all applications (active only for non-admin users)
+      security: []
+      responses:
+        '200':
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /application/{id}/download:
+    get:
+      tags:
+        - Applications
+      summary: Download application
+      description: Get download URL for an application
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Download URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data:
+                  url: "https://storage.example.com/app-download-url"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Admin Application Management
+  /admin/application:
+    post:
+      tags:
+        - Admin
+      summary: Create application (Admin)
+      description: Create a new application (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationRequest'
+      responses:
+        '200':
+          description: Application created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /admin/application/{id}/upload:
+    get:
+      tags:
+        - Admin
+      summary: Get application upload URL (Admin)
+      description: Get pre-signed URL for uploading application file
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Upload URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/application/{id}/hide:
+    post:
+      tags:
+        - Admin
+      summary: Hide application (Admin)
+      description: Mark application as hidden
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Application hidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/application/{id}/active:
+    post:
+      tags:
+        - Admin
+      summary: Activate application (Admin)
+      description: Mark application as active
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Application activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/application/{id}:
+    put:
+      tags:
+        - Admin
+      summary: Update application (Admin)
+      description: Update application details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationRequest'
+      responses:
+        '200':
+          description: Application updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Admin
+      summary: Delete application (Admin)
+      description: Delete an application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Application deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/application/{id}/commit-download:
+    post:
+      tags:
+        - Admin
+      summary: Commit application download (Admin)
+      description: Update application size after upload
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Application ID
+      responses:
+        '200':
+          description: Application download committed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Helper endpoints
+  /helper/unique-target-animal:
+    get:
+      tags:
+        - Helpers
+      summary: Get unique target animals
+      description: Get list of unique target animals from all models
+      security: []
+      responses:
+        '200':
+          description: List of unique target animals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                code: 100
+                message: "success"
+                data: ["crocodile", "elephant", "lion"]
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ModelId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Model ID
+
+    QuantizationId:
+      name: quantizationId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Quantization ID
+
+    FormatId:
+      name: format
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Format ID
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 200
+            message: "error"
+            data: null
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 201
+            message: "unauthorized"
+            data: null
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 202
+            message: "forbidden"
+            data: null
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 200
+            message: "error"
+            data: null
+
+  schemas:
+    # Base response schemas
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code (100 = success)
+        message:
+          type: string
+          description: Response message
+        data:
+          description: Response data (varies by endpoint)
+      required:
+        - code
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        data:
+          type: object
+          nullable: true
+          description: Always null for errors
+      required:
+        - code
+        - message
+        - data
+
+    # Device Info
+    DeviceInfo:
+      type: object
+      properties:
+        platform:
+          type: string
+          description: Device platform
+        physicalRamSize:
+          type: integer
+          description: Physical RAM size in bytes
+        isPhysicalDevice:
+          type: boolean
+          description: Whether this is a physical device
+        model:
+          type: string
+          description: Device model
+        name:
+          type: string
+          description: Device name
+        hardware:
+          type: string
+          description: Hardware information
+        version:
+          type: string
+          description: OS version
+      required:
+        - platform
+
+    # User schemas
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          minLength: 8
+          maxLength: 16
+          description: User password
+      required:
+        - email
+        - password
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          minLength: 8
+          maxLength: 16
+          description: User password
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfo'
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User ID
+        email:
+          type: string
+          description: User email
+        isAdmin:
+          type: boolean
+          description: Whether user is admin
+        status:
+          type: string
+          description: User status
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    # Model schemas
+    CreateModelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Model name (alphanumeric, dash, underscore only)
+        modelType:
+          type: string
+          enum: ["YOLO-v5", "YOLO-v5-Legacy", "YOLO-v8", "YOLO-v11"]
+          description: Type of model
+        targetAnimal:
+          type: string
+          description: Target animal for detection
+        description:
+          type: string
+          description: Model description
+        url:
+          type: string
+          description: Model reference URL
+      required:
+        - name
+        - modelType
+        - targetAnimal
+
+    UpdateModelRequest:
+      type: object
+      properties:
+        modelType:
+          type: string
+          enum: ["YOLO-v5", "YOLO-v5-Legacy", "YOLO-v8", "YOLO-v11"]
+          description: Type of model
+        targetAnimal:
+          type: string
+          description: Target animal for detection
+        description:
+          type: string
+          description: Model description
+        url:
+          type: string
+          description: Model reference URL
+        status:
+          type: string
+          enum: ["public", "hidden"]
+          description: Model visibility status
+        usedForFinalBenchmark:
+          type: boolean
+          description: Whether model is used for final benchmarking
+
+    Model:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Model ID
+        name:
+          type: string
+          description: Model name
+        targetAnimal:
+          type: string
+          description: Target animal
+        description:
+          type: string
+          description: Model description
+        modelType:
+          type: string
+          description: Model type
+        status:
+          type: string
+          enum: ["public", "hidden"]
+          description: Model status
+        isOfficial:
+          type: boolean
+          description: Whether model is official
+        url:
+          type: string
+          description: Model URL
+        creatorId:
+          type: integer
+          description: Creator user ID
+        creator:
+          $ref: '#/components/schemas/User'
+        usedForFinalBenchmark:
+          type: boolean
+          description: Used for final benchmark
+        containOriginalModel:
+          type: boolean
+          description: Contains original model file
+        md5:
+          type: string
+          description: MD5 hash
+        size:
+          type: integer
+          description: File size in bytes
+        modelQuantization:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelQuantization'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # Model Quantization schemas
+    CreateModelQuantizationRequest:
+      type: object
+      properties:
+        modelId:
+          type: integer
+          description: Model ID
+        quantization:
+          type: string
+          description: Quantization type (alphanumeric, dash, underscore only)
+        accuracy:
+          type: number
+          format: float
+          description: Model accuracy
+      required:
+        - modelId
+        - quantization
+        - accuracy
+
+    ModelQuantizationUpdateRequest:
+      type: object
+      properties:
+        accuracy:
+          type: number
+          format: float
+          description: Updated accuracy value
+      required:
+        - accuracy
+
+    ModelQuantization:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Quantization ID
+        modelId:
+          type: integer
+          description: Model ID
+        quantization:
+          type: string
+          description: Quantization type
+        accuracy:
+          type: number
+          format: float
+          description: Model accuracy
+        modelQuantizationFormat:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelQuantizationFormat'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # Model Quantization Format schemas
+    ModelQuantizationFormatCreateRequest:
+      type: object
+      properties:
+        format:
+          type: string
+          description: Format type (alphanumeric, dash, underscore only)
+      required:
+        - format
+
+    ModelQuantizationFormat:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Format ID
+        modelId:
+          type: integer
+          description: Model ID
+        modelQuantizationId:
+          type: integer
+          description: Quantization ID
+        format:
+          type: string
+          description: Format type
+        md5:
+          type: string
+          description: MD5 hash
+        size:
+          type: integer
+          description: File size in bytes
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # Detection schemas
+    BBOX:
+      type: object
+      properties:
+        x1:
+          type: number
+          format: float
+          description: Top-left X coordinate
+        y1:
+          type: number
+          format: float
+          description: Top-left Y coordinate
+        x2:
+          type: number
+          format: float
+          description: Bottom-right X coordinate
+        y2:
+          type: number
+          format: float
+          description: Bottom-right Y coordinate
+        cx:
+          type: number
+          format: float
+          description: Center X coordinate
+        cy:
+          type: number
+          format: float
+          description: Center Y coordinate
+        w:
+          type: number
+          format: float
+          description: Width
+        h:
+          type: number
+          format: float
+          description: Height
+
+    DetectionFrame:
+      type: object
+      properties:
+        classId:
+          type: integer
+          description: Class ID
+        confidence:
+          type: number
+          format: float
+          description: Detection confidence
+        bbox:
+          $ref: '#/components/schemas/BBOX'
+        classScore:
+          type: number
+          format: float
+          description: Class score
+
+    DetectionHistory:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+          description: Timestamp in milliseconds
+        detectionFrames:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetectionFrame'
+        elapsed:
+          type: integer
+          format: int64
+          description: Processing time in milliseconds
+
+    CreateDetectionRecordRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Record name
+        modelId:
+          type: integer
+          description: Model ID (0 for default)
+        modelQuantizationId:
+          type: integer
+          description: Quantization ID (0 for default)
+        formatId:
+          type: integer
+          description: Format ID (0 for default)
+        detectionType:
+          type: string
+          description: Type of detection (image/video)
+        size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        duration:
+          type: number
+          format: float
+          description: Duration in seconds
+        md5Hash:
+          type: string
+          description: MD5 hash of file
+        latitude:
+          type: number
+          format: float
+          description: GPS latitude
+        longitude:
+          type: number
+          format: float
+          description: GPS longitude
+        detectionHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetectionHistory'
+        inferenceEngine:
+          type: string
+          description: Inference engine used
+        useNNApi:
+          type: boolean
+          description: Whether NNAPI was used
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfo'
+        extension:
+          type: string
+          description: File extension
+        detectionId:
+          type: string
+          description: Unique detection ID
+        videoLength:
+          type: integer
+          format: int64
+          description: Video length in milliseconds
+        thumbnailExtension:
+          type: string
+          description: Thumbnail file extension
+      required:
+        - name
+        - detectionType
+        - detectionId
+        - extension
+
+    DetectionRecordUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Updated record name
+      required:
+        - name
+
+    # Benchmark schemas
+    BenchmarkResult:
+      type: object
+      properties:
+        index:
+          type: integer
+          description: Result index
+        latency:
+          type: integer
+          description: Latency in milliseconds
+
+    CreateBenchmarkRecordRequest:
+      type: object
+      properties:
+        modelId:
+          type: integer
+          description: Model ID (0 for default)
+        modelQuantizationId:
+          type: integer
+          description: Quantization ID (0 for default)
+        formatId:
+          type: integer
+          description: Format ID (0 for default)
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfo'
+        inferenceEngine:
+          type: string
+          description: Inference engine used
+        useNNApi:
+          type: boolean
+          description: Whether NNAPI was used
+        iteration:
+          type: integer
+          description: Number of iterations
+        benchmarkResult:
+          type: array
+          items:
+            $ref: '#/components/schemas/BenchmarkResult'
+      required:
+        - deviceInfo
+        - inferenceEngine
+        - iteration
+        - benchmarkResult
+
+    CreateDeepAnalysisRecordRequest:
+      type: object
+      properties:
+        modelId:
+          type: integer
+          description: Model ID
+        modelQuantizationId:
+          type: integer
+          description: Quantization ID
+        formatId:
+          type: integer
+          description: Format ID
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfo'
+        inferenceEngine:
+          type: string
+          description: Inference engine used
+        useNNApi:
+          type: boolean
+          description: Whether NNAPI was used
+        minLatency:
+          type: integer
+          description: Minimum latency in milliseconds
+        maxLatency:
+          type: integer
+          description: Maximum latency in milliseconds
+        averageLatency:
+          type: integer
+          description: Average latency in milliseconds
+        iteration:
+          type: integer
+          description: Number of iterations
+        errorMessage:
+          type: string
+          description: Error messages if any
+        fromOriginalModel:
+          type: boolean
+          description: Whether analysis is from original model
+      required:
+        - modelId
+        - modelQuantizationId
+        - formatId
+        - deviceInfo
+        - inferenceEngine
+        - minLatency
+        - maxLatency
+        - averageLatency
+        - iteration
+        - fromOriginalModel
+
+    # Application schemas
+    CreateApplicationRequest:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum: ["android", "ios"]
+          description: Application platform
+        description:
+          type: string
+          description: Application description
+        version:
+          type: string
+          description: Application version
+      required:
+        - platform
+        - version
+
+    UpdateApplicationRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Updated description
+        status:
+          type: string
+          enum: ["active", "hidden"]
+          description: Updated status
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Application ID
+        platform:
+          type: string
+          enum: ["android", "ios"]
+          description: Application platform
+        description:
+          type: string
+          description: Application description
+        version:
+          type: string
+          description: Application version
+        status:
+          type: string
+          enum: ["active", "hidden"]
+          description: Application status
+        size:
+          type: integer
+          format: int64
+          description: Application file size
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+tags:
+  - name: Health
+    description: System health and status endpoints
+  - name: Authentication
+    description: User authentication and management
+  - name: Models
+    description: AI model management
+  - name: Quantization
+    description: Model quantization management
+  - name: Formats
+    description: Quantization format management
+  - name: Detection
+    description: Detection record management
+  - name: Benchmark
+    description: Benchmarking and performance analysis
+  - name: Applications
+    description: Mobile application management
+  - name: Admin
+    description: Administrative functions
+  - name: Helpers
+    description: Utility endpoints

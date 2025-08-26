@@ -1,0 +1,48 @@
+type: object
+properties:
+  modelId:
+    type: integer
+    description: Model ID
+  modelQuantizationId:
+    type: integer
+    description: Quantization ID
+  formatId:
+    type: integer
+    description: Format ID
+  deviceInfo:
+    $ref: ./DeviceInfo.yaml
+  inferenceEngine:
+    type: string
+    description: Inference engine used
+  useNNApi:
+    type: boolean
+    description: Whether NNAPI was used
+  minLatency:
+    type: integer
+    description: Minimum latency in milliseconds
+  maxLatency:
+    type: integer
+    description: Maximum latency in milliseconds
+  averageLatency:
+    type: integer
+    description: Average latency in milliseconds
+  iteration:
+    type: integer
+    description: Number of iterations
+  errorMessage:
+    type: string
+    description: Error messages if any
+  fromOriginalModel:
+    type: boolean
+    description: Whether analysis is from original model
+required:
+  - modelId
+  - modelQuantizationId
+  - formatId
+  - deviceInfo
+  - inferenceEngine
+  - minLatency
+  - maxLatency
+  - averageLatency
+  - iteration
+  - fromOriginalModel

@@ -1,0 +1,34 @@
+type: object
+properties:
+  x1:
+    type: number
+    format: float
+    description: Top-left X coordinate
+  y1:
+    type: number
+    format: float
+    description: Top-left Y coordinate
+  x2:
+    type: number
+    format: float
+    description: Bottom-right X coordinate
+  y2:
+    type: number
+    format: float
+    description: Bottom-right Y coordinate
+  cx:
+    type: number
+    format: float
+    description: Center X coordinate
+  cy:
+    type: number
+    format: float
+    description: Center Y coordinate
+  w:
+    type: number
+    format: float
+    description: Width
+  h:
+    type: number
+    format: float
+    description: Height

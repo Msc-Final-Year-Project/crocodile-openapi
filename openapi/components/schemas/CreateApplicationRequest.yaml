@@ -1,0 +1,17 @@
+type: object
+properties:
+  platform:
+    type: string
+    enum:
+      - android
+      - ios
+    description: Application platform
+  description:
+    type: string
+    description: Application description
+  version:
+    type: string
+    description: Application version
+required:
+  - platform
+  - version

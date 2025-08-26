@@ -1,0 +1,9 @@
+description: Not found
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/ErrorResponse.yaml
+    example:
+      code: 200
+      message: error
+      data: null

@@ -1,0 +1,27 @@
+post:
+  tags:
+    - Admin
+  summary: Activate application (Admin)
+  description: Mark application as active
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Application ID
+  responses:
+    '200':
+      description: Application activated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml

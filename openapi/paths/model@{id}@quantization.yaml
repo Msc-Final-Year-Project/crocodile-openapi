@@ -1,0 +1,42 @@
+get:
+  tags:
+    - Quantization
+  summary: List model quantizations
+  description: Get all quantizations for a specific model
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  responses:
+    '200':
+      description: List of model quantizations
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml
+post:
+  tags:
+    - Quantization
+  summary: Create model quantization
+  description: Create a new quantization for a model
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateModelQuantizationRequest.yaml
+  responses:
+    '200':
+      description: Quantization created successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

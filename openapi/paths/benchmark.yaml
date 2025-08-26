@@ -1,0 +1,36 @@
+get:
+  tags:
+    - Benchmark
+  summary: List benchmark records
+  description: Get all benchmark records for the authenticated user
+  responses:
+    '200':
+      description: List of benchmark records
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+post:
+  tags:
+    - Benchmark
+  summary: Create benchmark record
+  description: Create a new benchmark record
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateBenchmarkRecordRequest.yaml
+  responses:
+    '200':
+      description: Benchmark record created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

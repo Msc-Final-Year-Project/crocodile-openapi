@@ -1,0 +1,16 @@
+type: object
+properties:
+  email:
+    type: string
+    format: email
+    description: User email address
+  password:
+    type: string
+    minLength: 8
+    maxLength: 16
+    description: User password
+  deviceInfo:
+    $ref: ./DeviceInfo.yaml
+required:
+  - email
+  - password

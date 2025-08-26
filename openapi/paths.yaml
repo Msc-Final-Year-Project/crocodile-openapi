@@ -1,0 +1,25 @@
+get:
+  tags:
+    - Health
+  summary: Health check and system information
+  description: 'Returns system health status, CPU, memory usage, and version'
+  security: []
+  responses:
+    '200':
+      description: System health information
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiResponse'
+          example:
+            code: 100
+            message: success
+            data:
+              message: pong
+              cpu: 8
+              memory:
+                alloc: 1024000
+                totalAlloc: 5120000
+                sys: 10240000
+                numGC: 15
+              version: 1.0.0

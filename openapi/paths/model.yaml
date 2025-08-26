@@ -1,0 +1,36 @@
+get:
+  tags:
+    - Models
+  summary: List user's models
+  description: Get all models created by the authenticated user
+  responses:
+    '200':
+      description: List of user's models
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+post:
+  tags:
+    - Models
+  summary: Create a new model
+  description: Create a new AI model
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateModelRequest.yaml
+  responses:
+    '200':
+      description: Model created successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

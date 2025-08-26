@@ -1,0 +1,24 @@
+post:
+  tags:
+    - Admin
+  summary: Create application (Admin)
+  description: Create a new application (admin only)
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateApplicationRequest.yaml
+  responses:
+    '200':
+      description: Application created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml

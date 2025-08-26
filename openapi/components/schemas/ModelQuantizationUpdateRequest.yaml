@@ -1,0 +1,8 @@
+type: object
+properties:
+  accuracy:
+    type: number
+    format: float
+    description: Updated accuracy value
+required:
+  - accuracy

@@ -1,0 +1,29 @@
+get:
+  tags:
+    - Applications
+  summary: Download application
+  description: Get download URL for an application
+  security: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Application ID
+  responses:
+    '200':
+      description: Download URL generated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              url: 'https://storage.example.com/app-download-url'
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml

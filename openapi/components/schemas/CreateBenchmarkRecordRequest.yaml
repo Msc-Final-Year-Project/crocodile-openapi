@@ -1,0 +1,31 @@
+type: object
+properties:
+  modelId:
+    type: integer
+    description: Model ID (0 for default)
+  modelQuantizationId:
+    type: integer
+    description: Quantization ID (0 for default)
+  formatId:
+    type: integer
+    description: Format ID (0 for default)
+  deviceInfo:
+    $ref: ./DeviceInfo.yaml
+  inferenceEngine:
+    type: string
+    description: Inference engine used
+  useNNApi:
+    type: boolean
+    description: Whether NNAPI was used
+  iteration:
+    type: integer
+    description: Number of iterations
+  benchmarkResult:
+    type: array
+    items:
+      $ref: ./BenchmarkResult.yaml
+required:
+  - deviceInfo
+  - inferenceEngine
+  - iteration
+  - benchmarkResult

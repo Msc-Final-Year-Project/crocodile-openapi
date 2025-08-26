@@ -1,0 +1,64 @@
+get:
+  tags:
+    - Models
+  summary: Get model details
+  description: Retrieve detailed information about a specific model
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  responses:
+    '200':
+      description: Model details
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+put:
+  tags:
+    - Models
+  summary: Update model
+  description: Update model information
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateModelRequest.yaml
+  responses:
+    '200':
+      description: Model updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+delete:
+  tags:
+    - Models
+  summary: Delete model
+  description: Delete a model and all its associated data
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  responses:
+    '200':
+      description: Model deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml

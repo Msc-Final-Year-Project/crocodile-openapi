@@ -1,0 +1,43 @@
+get:
+  tags:
+    - Detection
+  summary: List detection records
+  description: Get all detection records for the authenticated user
+  responses:
+    '200':
+      description: List of detection records
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+post:
+  tags:
+    - Detection
+  summary: Create detection record
+  description: Create a new detection record
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateDetectionRecordRequest.yaml
+  responses:
+    '200':
+      description: Detection record created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              id: 1
+              uploadUrl: 'https://storage.example.com/upload-url'
+              thumbnailUploadUrl: 'https://storage.example.com/thumbnail-upload-url'
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

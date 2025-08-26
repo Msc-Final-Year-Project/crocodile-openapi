@@ -1,0 +1,16 @@
+post:
+  tags:
+    - Models
+  summary: Complete model upload
+  description: Mark model upload as complete and update metadata
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  responses:
+    '200':
+      description: Upload completed successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

@@ -1,0 +1,20 @@
+get:
+  tags:
+    - Formats
+  summary: Get format download URL
+  description: Get pre-signed URL for downloading quantization format file
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+    - $ref: ../components/parameters/FormatId.yaml
+  responses:
+    '200':
+      description: Download URL generated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml

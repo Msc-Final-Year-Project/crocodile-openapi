@@ -1,0 +1,54 @@
+put:
+  tags:
+    - Detection
+  summary: Update detection record
+  description: Update detection record name
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Detection record ID
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/DetectionRecordUpdateRequest.yaml
+  responses:
+    '200':
+      description: Detection record updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+delete:
+  tags:
+    - Detection
+  summary: Delete detection record
+  description: Delete a detection record and its associated files
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Detection record ID
+  responses:
+    '200':
+      description: Detection record deleted
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml

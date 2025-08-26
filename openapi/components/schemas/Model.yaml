@@ -1,0 +1,56 @@
+type: object
+properties:
+  id:
+    type: integer
+    description: Model ID
+  name:
+    type: string
+    description: Model name
+  targetAnimal:
+    type: string
+    description: Target animal
+  description:
+    type: string
+    description: Model description
+  modelType:
+    type: string
+    description: Model type
+  status:
+    type: string
+    enum:
+      - public
+      - hidden
+    description: Model status
+  isOfficial:
+    type: boolean
+    description: Whether model is official
+  url:
+    type: string
+    description: Model URL
+  creatorId:
+    type: integer
+    description: Creator user ID
+  creator:
+    $ref: ./User.yaml
+  usedForFinalBenchmark:
+    type: boolean
+    description: Used for final benchmark
+  containOriginalModel:
+    type: boolean
+    description: Contains original model file
+  md5:
+    type: string
+    description: MD5 hash
+  size:
+    type: integer
+    description: File size in bytes
+  modelQuantization:
+    type: array
+    items:
+      $ref: ./ModelQuantization.yaml
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

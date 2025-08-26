@@ -1,0 +1,18 @@
+get:
+  tags:
+    - Formats
+  summary: Get format upload URL
+  description: Get pre-signed URL for uploading quantization format file
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+    - $ref: ../components/parameters/FormatId.yaml
+  responses:
+    '200':
+      description: Upload URL generated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

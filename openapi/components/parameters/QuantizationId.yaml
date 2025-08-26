@@ -1,0 +1,6 @@
+name: quantizationId
+in: path
+required: true
+schema:
+  type: integer
+description: Quantization ID

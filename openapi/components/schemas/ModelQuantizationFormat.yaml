@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+    description: Format ID
+  modelId:
+    type: integer
+    description: Model ID
+  modelQuantizationId:
+    type: integer
+    description: Quantization ID
+  format:
+    type: string
+    description: Format type
+  md5:
+    type: string
+    description: MD5 hash
+  size:
+    type: integer
+    description: File size in bytes
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

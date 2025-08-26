@@ -1,0 +1,35 @@
+get:
+  tags:
+    - Benchmark
+  summary: List analyzed models
+  description: Get all deep analysis records (public)
+  security: []
+  responses:
+    '200':
+      description: List of analyzed models
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+post:
+  tags:
+    - Benchmark
+  summary: Create deep analysis record
+  description: Create a new deep analysis record
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateDeepAnalysisRecordRequest.yaml
+  responses:
+    '200':
+      description: Deep analysis record created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

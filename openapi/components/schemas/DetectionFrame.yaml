@@ -1,0 +1,15 @@
+type: object
+properties:
+  classId:
+    type: integer
+    description: Class ID
+  confidence:
+    type: number
+    format: float
+    description: Detection confidence
+  bbox:
+    $ref: ./BBOX.yaml
+  classScore:
+    type: number
+    format: float
+    description: Class score

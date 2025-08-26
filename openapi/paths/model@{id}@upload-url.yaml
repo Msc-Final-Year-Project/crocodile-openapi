@@ -1,0 +1,21 @@
+get:
+  tags:
+    - Models
+  summary: Get model upload URL
+  description: Get a pre-signed URL for uploading model file
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+  responses:
+    '200':
+      description: Upload URL generated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              url: 'https://storage.example.com/upload-url'
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

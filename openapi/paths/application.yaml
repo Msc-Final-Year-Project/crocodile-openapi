@@ -1,0 +1,13 @@
+get:
+  tags:
+    - Applications
+  summary: List applications
+  description: Get all applications (active only for non-admin users)
+  security: []
+  responses:
+    '200':
+      description: List of applications
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml

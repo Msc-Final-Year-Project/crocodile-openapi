@@ -1,0 +1,7 @@
+type: object
+properties:
+  format:
+    type: string
+    description: 'Format type (alphanumeric, dash, underscore only)'
+required:
+  - format

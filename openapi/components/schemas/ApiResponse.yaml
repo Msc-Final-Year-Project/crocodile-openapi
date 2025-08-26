@@ -1,0 +1,13 @@
+type: object
+properties:
+  code:
+    type: integer
+    description: Response code (100 = success)
+  message:
+    type: string
+    description: Response message
+  data:
+    description: Response data (varies by endpoint)
+required:
+  - code
+  - message

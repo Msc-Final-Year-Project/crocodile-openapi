@@ -1,0 +1,14 @@
+type: object
+properties:
+  timestamp:
+    type: integer
+    format: int64
+    description: Timestamp in milliseconds
+  detectionFrames:
+    type: array
+    items:
+      $ref: ./DetectionFrame.yaml
+  elapsed:
+    type: integer
+    format: int64
+    description: Processing time in milliseconds

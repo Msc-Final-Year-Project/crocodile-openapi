@@ -1,0 +1,22 @@
+get:
+  tags:
+    - Authentication
+  summary: Get current user information
+  description: Retrieve information about the authenticated user
+  responses:
+    '200':
+      description: User information
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              id: 1
+              email: user@example.com
+              isAdmin: false
+              status: active
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

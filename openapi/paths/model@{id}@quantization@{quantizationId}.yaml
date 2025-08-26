@@ -1,0 +1,42 @@
+put:
+  tags:
+    - Quantization
+  summary: Update model quantization
+  description: Update quantization accuracy
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ModelQuantizationUpdateRequest.yaml
+  responses:
+    '200':
+      description: Quantization updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+delete:
+  tags:
+    - Quantization
+  summary: Delete model quantization
+  description: Delete a quantization and all its formats
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+  responses:
+    '200':
+      description: Quantization deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

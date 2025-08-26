@@ -1,0 +1,18 @@
+post:
+  tags:
+    - Formats
+  summary: Complete format upload
+  description: Mark format upload as complete and update metadata
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+    - $ref: ../components/parameters/FormatId.yaml
+  responses:
+    '200':
+      description: Upload completed successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

@@ -1,4 +1,4 @@
-# crocodile OpenAPI Definition
+# Crocodile Backend API OpenAPI Definition
 
 ## Working on your OpenAPI Definition
 

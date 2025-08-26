@@ -1,0 +1,14 @@
+get:
+  tags:
+    - Benchmark
+  summary: List user's analyzed models
+  description: Get deep analysis records for the authenticated user
+  responses:
+    '200':
+      description: List of user's analyzed models
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

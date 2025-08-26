@@ -1,0 +1,25 @@
+type: object
+properties:
+  id:
+    type: integer
+    description: Quantization ID
+  modelId:
+    type: integer
+    description: Model ID
+  quantization:
+    type: string
+    description: Quantization type
+  accuracy:
+    type: number
+    format: float
+    description: Model accuracy
+  modelQuantizationFormat:
+    type: array
+    items:
+      $ref: ./ModelQuantizationFormat.yaml
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

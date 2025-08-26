@@ -1,0 +1,23 @@
+delete:
+  tags:
+    - Formats
+  summary: Delete quantization format
+  description: Delete a specific quantization format
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+    - name: formatId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Format ID
+  responses:
+    '200':
+      description: Format deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

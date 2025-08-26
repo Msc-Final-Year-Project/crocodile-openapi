@@ -1,0 +1,11 @@
+type: object
+properties:
+  description:
+    type: string
+    description: Updated description
+  status:
+    type: string
+    enum:
+      - active
+      - hidden
+    description: Updated status

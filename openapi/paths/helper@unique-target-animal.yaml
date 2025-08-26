@@ -1,0 +1,20 @@
+get:
+  tags:
+    - Helpers
+  summary: Get unique target animals
+  description: Get list of unique target animals from all models
+  security: []
+  responses:
+    '200':
+      description: List of unique target animals
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              - crocodile
+              - elephant
+              - lion

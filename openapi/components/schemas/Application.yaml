@@ -1,0 +1,33 @@
+type: object
+properties:
+  id:
+    type: integer
+    description: Application ID
+  platform:
+    type: string
+    enum:
+      - android
+      - ios
+    description: Application platform
+  description:
+    type: string
+    description: Application description
+  version:
+    type: string
+    description: Application version
+  status:
+    type: string
+    enum:
+      - active
+      - hidden
+    description: Application status
+  size:
+    type: integer
+    format: int64
+    description: Application file size
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

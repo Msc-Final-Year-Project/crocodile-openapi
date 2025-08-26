@@ -1,0 +1,25 @@
+type: object
+properties:
+  platform:
+    type: string
+    description: Device platform
+  physicalRamSize:
+    type: integer
+    description: Physical RAM size in bytes
+  isPhysicalDevice:
+    type: boolean
+    description: Whether this is a physical device
+  model:
+    type: string
+    description: Device model
+  name:
+    type: string
+    description: Device name
+  hardware:
+    type: string
+    description: Hardware information
+  version:
+    type: string
+    description: OS version
+required:
+  - platform

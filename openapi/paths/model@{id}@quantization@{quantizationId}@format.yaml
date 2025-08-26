@@ -1,0 +1,25 @@
+post:
+  tags:
+    - Formats
+  summary: Create quantization format
+  description: Create a new format for a model quantization
+  parameters:
+    - $ref: ../components/parameters/ModelId.yaml
+    - $ref: ../components/parameters/QuantizationId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ModelQuantizationFormatCreateRequest.yaml
+  responses:
+    '200':
+      description: Format created successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml

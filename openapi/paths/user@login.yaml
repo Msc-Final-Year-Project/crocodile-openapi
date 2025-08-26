@@ -1,0 +1,26 @@
+post:
+  tags:
+    - Authentication
+  summary: User login
+  description: Authenticate user and return JWT token
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/LoginRequest.yaml
+  responses:
+    '200':
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    '400':
+      $ref: ../components/responses/BadRequest.yaml

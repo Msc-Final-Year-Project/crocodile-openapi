@@ -1,0 +1,28 @@
+type: object
+properties:
+  modelType:
+    type: string
+    enum:
+      - YOLO-v5
+      - YOLO-v5-Legacy
+      - YOLO-v8
+      - YOLO-v11
+    description: Type of model
+  targetAnimal:
+    type: string
+    description: Target animal for detection
+  description:
+    type: string
+    description: Model description
+  url:
+    type: string
+    description: Model reference URL
+  status:
+    type: string
+    enum:
+      - public
+      - hidden
+    description: Model visibility status
+  usedForFinalBenchmark:
+    type: boolean
+    description: Whether model is used for final benchmarking

@@ -1,0 +1,8 @@
+type: object
+properties:
+  index:
+    type: integer
+    description: Result index
+  latency:
+    type: integer
+    description: Latency in milliseconds

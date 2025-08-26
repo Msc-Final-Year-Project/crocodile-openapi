@@ -1,0 +1,66 @@
+type: object
+properties:
+  name:
+    type: string
+    description: Record name
+  modelId:
+    type: integer
+    description: Model ID (0 for default)
+  modelQuantizationId:
+    type: integer
+    description: Quantization ID (0 for default)
+  formatId:
+    type: integer
+    description: Format ID (0 for default)
+  detectionType:
+    type: string
+    description: Type of detection (image/video)
+  size:
+    type: integer
+    format: int64
+    description: File size in bytes
+  duration:
+    type: number
+    format: float
+    description: Duration in seconds
+  md5Hash:
+    type: string
+    description: MD5 hash of file
+  latitude:
+    type: number
+    format: float
+    description: GPS latitude
+  longitude:
+    type: number
+    format: float
+    description: GPS longitude
+  detectionHistory:
+    type: array
+    items:
+      $ref: ./DetectionHistory.yaml
+  inferenceEngine:
+    type: string
+    description: Inference engine used
+  useNNApi:
+    type: boolean
+    description: Whether NNAPI was used
+  deviceInfo:
+    $ref: ./DeviceInfo.yaml
+  extension:
+    type: string
+    description: File extension
+  detectionId:
+    type: string
+    description: Unique detection ID
+  videoLength:
+    type: integer
+    format: int64
+    description: Video length in milliseconds
+  thumbnailExtension:
+    type: string
+    description: Thumbnail file extension
+required:
+  - name
+  - detectionType
+  - detectionId
+  - extension

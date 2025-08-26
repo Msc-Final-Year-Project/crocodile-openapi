@@ -1,0 +1,16 @@
+type: object
+properties:
+  modelId:
+    type: integer
+    description: Model ID
+  quantization:
+    type: string
+    description: 'Quantization type (alphanumeric, dash, underscore only)'
+  accuracy:
+    type: number
+    format: float
+    description: Model accuracy
+required:
+  - modelId
+  - quantization
+  - accuracy

@@ -1,0 +1,27 @@
+get:
+  tags:
+    - Admin
+  summary: Get application upload URL (Admin)
+  description: Get pre-signed URL for uploading application file
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Application ID
+  responses:
+    '200':
+      description: Upload URL generated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml

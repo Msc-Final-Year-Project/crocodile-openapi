@@ -1,0 +1,29 @@
+post:
+  tags:
+    - Authentication
+  summary: Register a new user
+  description: Create a new user account with email and password
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/RegisterRequest.yaml
+  responses:
+    '200':
+      description: User registered successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ApiResponse.yaml
+          example:
+            code: 100
+            message: success
+            data:
+              id: 1
+              email: user@example.com
+              isAdmin: false
+              status: active
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
